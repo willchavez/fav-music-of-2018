@@ -1,0 +1,148 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!-- hbs(handlebars): http://handlebarsjs.com/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Favorite Music 2018</title>
+    <meta name="description" content="My favorite books from 2018">
+    <link id="favicon" rel="icon" href="https://glitch.com/edit/favicon-app.ico" type="image/x-icon">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+    
+    <!-- import Google Fonts -->    
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display+Lato:400,700|Merriweather:400,700|Noto+Serif+SC:400,700|Montserrat|Roboto+Mono" rel="stylesheet">
+    
+
+    <!-- jQuery-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
+    </script>
+  
+    <script src="/transition.js"></script>
+    <link href="/zoom.css" rel="stylesheet">
+    <script src="/zoom.min.js"></script>
+    
+    <!-- FontAwesome --> 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    
+  </head>
+  <body>
+    <header>
+      <a name="top"></a>
+      <h1 style="text-transform: none">Favorite Music of 2018</h1>
+      <h5>Quick blurbs about some of my favorite albums of the year.</h5>
+      <p class="byline">
+        by <a href="http://www.willchavez.com/" target="_blank">William Chavez</a> <a href="https://twitter.com/_willchavez" target="_blank"><i class="fab fa-twitter"></i></a> <a href="http://last.fm/user/wchavezsalinas" target="_blank"><i class="fas fa-music"></i></a>
+
+         – remixed from <a href="http://www.tifftseng.com" target="_blank">Tiffany Tseng</a> <a href="https://twitter.com/scientiffic" target="_blank"><i class="fab fa-twitter"></i></a> <a href="http://last.fm/user/wrdstomakeup" target="_blank"><i class="fas fa-music"></i></a>
+      </p>
+      
+      <hr align="left">
+      
+      <div class="categories">
+      </div>
+      
+    </header>
+      
+    <main>
+
+    <h2>
+      Albums
+    </h2>
+      
+      <div id="favorite-albums" class="favorites">
+        
+      </div>
+
+    <hr>
+    <h2>
+     Songs 🎶 
+    </h2>   
+    <h6>
+      (excluding songs on the previously listed albums)
+    </h6>
+      
+      <ul>
+        <li>Sweet Memory – ARTHUR</li>
+        <li>Barrow Boot Boys – Helena Hauff</li>
+        <li>Square Up – Zack Fox, Kenny Beats</li>
+        <li>One More – Yaeji</li>
+        <li>New Patek – Lil Uzi Vert</li>
+        <li>Suspirium – Thom Yorke</li>
+        <li>If The Car Beside You Moves Ahead – James Blake</li>
+        <li>Moon River – Frank Ocean</li>
+        <li>Two Paintings by Nikolai Astrup – Mount Eerie</li>
+        <li>Nobody – Mitski</li>
+        <li>Emerald Rush – Jon Hopkins</li>
+        <li>Cómo Me Quieres – Khruangbin</li>
+        <li>Reborn – KIDS SEE GHOSTS</li>
+        <li>Black Car – Beach House</li>
+        <li>SUMO | ZUMO – Denzel Curry</li>
+        <li>Jesse – Frankie Cosmos</li>
+        <li>This Is America – Childish Gambino</li>
+      </ul>
+      <br>
+      <iframe src="https://open.spotify.com/embed/user/wchavezsalinas/playlist/61a4AOlnCVEMtidur4oB6V" width="300" height="420" frameborder="0" allowtransparency="true" allow="encrypted-media" class="spotify_playlist"></iframe>
+    </main>
+
+    <footer>
+    <a href="#top">Back to the top</a>
+
+
+    </footer>
+
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+
+  </body>
+  
+  <script type="text/javascript">
+    $(document).ready(function() {
+      loadFavorites();
+    });
+    
+    
+    function loadFavorites(){
+      // console.log('load favorites');
+      $.getJSON("/favorite_albums.json", function(data) {
+        // console.log("data: %O", data);
+        let categoryButtons = [];
+        
+        $.each(data.favorites, function(i, favorite){
+          // console.log("favorite: %O", favorite);
+          var title = `<div class="title">${favorite.title} <a href="${favorite.spotify}" target="_blank"><i class="fab mus fa-spotify"></i></a> <a href="${favorite.itunes}" target="_blank"><i class="fab mus fa-itunes-note"></i></a></div> `;
+          var author = `<div class="author">${favorite.author}</div>`;
+          var cover = `<img class="cover" src=${favorite.cover} data-action="zoom"></img>`;
+          var review = `<div class="review">📝- ${favorite.review}</div>`;
+          // console.log(favorite.categories);
+          $.each(favorite.categories, function(k, category){
+            // console.log(category);
+            if(!categoryButtons.includes(category)){
+              categoryButtons.push(category);
+            }
+          });
+          
+          var favoriteItem = `<div class='favorite'> ${cover} ${title} ${author} <hr align="left"> ${review} </div>`;
+          // console.log(`favoriteItem: ${favoriteItem}`);
+          $('#favorite-albums').append(favoriteItem);
+        });
+      
+      });
+    }    
+  
+
+  </script>
+  
+</html>
